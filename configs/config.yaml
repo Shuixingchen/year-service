@@ -1,0 +1,27 @@
+appname: "years"
+appdebug: true
+coin: "bitcoin"
+nodes: 
+  bitcoin:
+  - addr: "wss://polygon-mumbai.g.alchemy.com/v2/_4xDtlTKWmynPDVaX1JfRvysRif0wZ85"
+    chain: "Mumbai"
+    type: ""
+  # - addr: "ws://127.0.0.1:8545"
+statsdatabase:
+  polygon:
+    write:
+      name: "years:write"
+      dsn: "root:123456@tcp(127.0.0.1:3306)/years?charset=utf8"
+      type: ""
+      sshname: ""
+parseredis:
+  addr: "127.0.0.1:6379"
+  password: ""
+  db: 0
+log:
+  level: "debug"
+  path: "./logs/"
+  filename: "fixer.log"
+pyroscope:
+#   enabled: true
+#   address: "http://127.0.0.1:4040"

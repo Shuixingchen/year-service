@@ -1,4 +1,4 @@
-package handlers
+package services
 
 import (
 	"database/sql"
@@ -7,9 +7,8 @@ import (
 	"github.com/Shuixingchen/year-service/handlers/common"
 	"github.com/Shuixingchen/year-service/models"
 	"github.com/gin-gonic/gin"
+	log "github.com/sirupsen/logrus"
 )
-
-type Status = int
 
 const (
 	DefaultStatus = iota // default contract type
@@ -23,7 +22,10 @@ type Years struct {
 }
 
 func NewYearsHandler() *Years {
-	db := models.NewDB()
+	db := models.DBMaps["years:write"]
+	if db == nil {
+		log.WithField("mysql", "db").Fatal("db instance not exist")
+	}
 	return &Years{DB: db}
 }
 
