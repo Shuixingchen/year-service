@@ -11,7 +11,7 @@ statsdatabase:
   polygon:
     write:
       name: "years:write"
-      dsn: "root:123456@tcp(127.0.0.1:3306)/years?charset=utf8"
+      dsn: "csx:625625@tcp(127.0.0.1:3306)/years?charset=utf8"
       type: ""
       sshname: ""
 parseredis:
