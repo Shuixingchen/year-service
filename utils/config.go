@@ -11,11 +11,12 @@ type ParserConfig struct {
 	AppDebug      bool
 	Coin          string
 	OutputDir     string `default:"./outputs"`
-	Nodes         map[string][]Node
+	Nodes         map[int][]Node
 	StatsDatabase map[string]MySQLDB
 	ParseRedis    Redis
 	Log           Log
 	Pyroscope     Pyroscope
+	PrivateKey    string
 }
 
 type MySQLDSN struct {
@@ -35,9 +36,10 @@ type MySQLDB struct {
 }
 
 type Node struct {
-	Addr  string
-	Chain string
-	Type  string
+	Addr    string
+	Chain   string
+	Type    string
+	ChainID uint64
 }
 
 type Pyroscope struct {

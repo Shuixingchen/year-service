@@ -2,7 +2,7 @@ appname: "years"
 appdebug: true
 coin: "bitcoin"
 nodes: 
-  bitcoin:
+  80001:
   - addr: "wss://polygon-mumbai.g.alchemy.com/v2/_4xDtlTKWmynPDVaX1JfRvysRif0wZ85"
     chain: "Mumbai"
     type: ""
@@ -25,3 +25,4 @@ log:
 pyroscope:
 #   enabled: true
 #   address: "http://127.0.0.1:4040"
+privatekey: "19935d89cb5c67657c64a6383d601e30f04eb179a0369227403e5343bba22107"
