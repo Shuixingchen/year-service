@@ -36,14 +36,19 @@ func NewClient(nodes []utils.Node) *Client {
 
 func (c *Client) GetToken(tokenAddr string) *Token {
 	var token Token
-	contractAddress := common.HexToAddress(tokenAddr)
-	tc, err := erc20.NewErc20Caller(contractAddress, c.Clients[0])
-	if err != nil {
-		log.WithField("method", "NewErc20Caller").Error(err)
-	}
+	tc := c.GetTokenCaller(tokenAddr)
 	token.Address = tokenAddr
 	token.Name, _ = tc.Name(nil)
 	token.Dceimals, _ = tc.Decimals(nil)
 	token.Symbol, _ = tc.Symbol(nil)
 	return &token
+}
+
+func (c *Client) GetTokenCaller(tokenAddr string) *erc20.Erc20 {
+	contractAddress := common.HexToAddress(tokenAddr)
+	tc, err := erc20.NewErc20(contractAddress, c.Clients[0])
+	if err != nil {
+		log.WithField("method", "NewErc20Caller").Error(err)
+	}
+	return tc
 }

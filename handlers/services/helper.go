@@ -108,11 +108,6 @@ func ConstructV3Pool(client *ethclient.Client, token0, token1 *coreEntities.Toke
 		slot0.SqrtPriceX96, liquidity, int(slot0.Tick.Int64()), p)
 }
 
-func GetTokenInstance(client *ethclient.Client, tokenAddr string) {
-
-	WMATIC = coreEntities.NewToken(PolygonChainID, common.HexToAddress(WMaticAddr), 18, "Matic", "Matic Network(PolyGon)")
-}
-
 func FloatStringToBigInt(amount string, decimals int) *big.Int {
 	fAmount, _ := new(big.Float).SetString(amount)
 	fi, _ := new(big.Float).Mul(fAmount, big.NewFloat(math.Pow10(decimals))).Int(nil)
