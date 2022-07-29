@@ -5,10 +5,12 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/Shuixingchen/year-service/contracts/artificial/uniswap"
 	"github.com/Shuixingchen/year-service/utils"
 	coreEntities "github.com/daoleno/uniswap-sdk-core/entities"
 
 	"github.com/daoleno/uniswapv3-sdk/entities"
+	"github.com/daoleno/uniswapv3-sdk/examples/helper"
 	"github.com/daoleno/uniswapv3-sdk/periphery"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
@@ -30,6 +32,14 @@ type SwapParams struct {
 	SwapValue   string
 	MaxSlippage uint64
 }
+type QuoterParams struct {
+	ChainID   uint64
+	Token0    string
+	Token1    string
+	PoolFee   uint64
+	SwapValue string
+}
+
 type ApproveParams struct {
 	Token   string
 	Account string
@@ -64,8 +74,8 @@ func NewUniswapV3Handler() *UniswapV3Handler {
 func (h *UniswapV3Handler) Swap(c *gin.Context) {
 	// p := &SwapParams{
 	// 	ChainID:     80001,
-	// 	Token0:      WMATIC,
-	// 	Token1:      SportToken,
+	// 	Token0:      "0x8dc67E514f29D099c06BBF23a227031c0b3808ec",
+	// 	Token1:      "0x4047DeF04Ae123Bf223808119B9685104A33D5f7",
 	// 	PoolFee:     3000, // 最终除以1000000, 0.3%
 	// 	SwapValue:   "0.01",
 	// 	MaxSlippage: 10, // 最终也是除以1000000
@@ -116,7 +126,7 @@ func (h *UniswapV3Handler) Swap(c *gin.Context) {
 		log.WithField("method", "SwapCallParameters").Fatal(err)
 	}
 
-	tx, err := SendTX(client.Clients[0], common.HexToAddress(ContractV3SwapRouterV1),
+	tx, err := TryTX(client.Clients[0], common.HexToAddress(ContractV3SwapRouterV1),
 		swapValue, params.Calldata, wallet)
 	if err != nil {
 		log.WithField("method", "SendTX").Fatal(err)
@@ -129,6 +139,54 @@ func (h *UniswapV3Handler) Swap(c *gin.Context) {
 func (h *UniswapV3Handler) getToken(chainID uint, tokenAddr string) *coreEntities.Token {
 	token := h.Client.GetToken(tokenAddr)
 	return coreEntities.NewToken(chainID, common.HexToAddress(token.Address), uint(token.Dceimals), token.Name, token.Symbol)
+}
+
+// 查询兑换数量
+func (h *UniswapV3Handler) Quoter(c *gin.Context) {
+	// p := &QuoterParams{
+	// 	ChainID:   80001,
+	// 	Token0:    SportToken,
+	// 	Token1:    WMATIC,
+	// 	PoolFee:   3000,
+	// 	SwapValue: "0.01",
+	// }
+	var p QuoterParams
+	c.BindJSON(&p)
+
+	if len(utils.Config.Nodes[int(p.ChainID)]) == 0 {
+		log.Panic("need config chainid: ", p.ChainID)
+	}
+	client := NewClient(utils.Config.Nodes[int(p.ChainID)])
+	h.Client = client
+	quoterContract, err := uniswap.NewUniswapv3Quoter(common.HexToAddress(helper.ContractV3Quoter), h.Client.Clients[0])
+	if err != nil {
+		log.WithField("method", "NewUniswapv3Quoter").Fatal(err)
+	}
+	token0 := h.getToken(uint(p.ChainID), p.Token0)
+	token1 := h.getToken(uint(p.ChainID), p.Token1)
+
+	// get pooladdress from FactoryContract and poolinfo from Uniswapv3Pool Contract
+	_, err = ConstructV3Pool(client.Clients[0], token0, token1, p.PoolFee)
+	if err != nil {
+		log.WithField("method", "ConstructV3Pool").Fatal(err)
+	}
+
+	fee := big.NewInt(3000)
+	amountIn := helper.FloatStringToBigInt(p.SwapValue, int(token0.Decimals()))
+	sqrtPriceLimitX96 := big.NewInt(0)
+
+	var out []interface{}
+	rawCaller := &uniswap.Uniswapv3QuoterRaw{Contract: quoterContract}
+	err = rawCaller.Call(nil, &out, "quoteExactInputSingle", token0.Address, token1.Address,
+		fee, amountIn, sqrtPriceLimitX96)
+	if err != nil {
+		log.WithField("method", "quoteExactInputSingle").Fatal(err)
+	}
+	res := out[0].(*big.Int)
+	resFloat := IntDivDecimal(res, int(token1.Decimals()))
+	c.JSON(http.StatusOK, gin.H{
+		"out": resFloat,
+	})
 }
 
 // erc20 第一次swap，需要Approve给

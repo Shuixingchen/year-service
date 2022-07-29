@@ -25,6 +25,7 @@ func (h *WebHandler) Handle() {
 	v3 := r.Group("/v3")
 	uniswapV3Route := v3.Group("/uniswap")
 	uniswapV3Route.POST("/swap", uniswapV3.Swap)
+	uniswapV3Route.POST("/quoter", uniswapV3.Quoter)
 	uniswapV3Route.POST("/erc20/approve", uniswapV3.Approve)
 
 	walletRoute := r.Group("/wallet")

@@ -113,3 +113,15 @@ func FloatStringToBigInt(amount string, decimals int) *big.Int {
 	fi, _ := new(big.Float).Mul(fAmount, big.NewFloat(math.Pow10(decimals))).Int(nil)
 	return fi
 }
+
+func IntWithDecimal(v uint64, decimal int) *big.Int {
+	pow := new(big.Int).Exp(big.NewInt(10), big.NewInt(int64(decimal)), nil)
+	return new(big.Int).Mul(big.NewInt(int64(v)), pow)
+}
+
+func IntDivDecimal(v *big.Int, decimal int) *big.Float {
+	pow := new(big.Int).Exp(big.NewInt(10), big.NewInt(int64(decimal)), nil)
+	origin := big.NewFloat(0).SetInt(v)
+	powfloat := big.NewFloat(0).SetInt(pow)
+	return new(big.Float).Quo(origin, powfloat)
+}
