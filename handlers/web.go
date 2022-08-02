@@ -17,6 +17,7 @@ func (h *WebHandler) Handle() {
 	years := services.NewYearsHandler()
 	uniswapV3 := services.NewUniswapV3Handler()
 	wallet := services.NewWalletHandler()
+	block := services.NewBlockHandler()
 
 	versionRoute := r.Group("/v1")
 	serviceRoute := versionRoute.Group("/years")
@@ -30,6 +31,9 @@ func (h *WebHandler) Handle() {
 
 	walletRoute := r.Group("/wallet")
 	walletRoute.GET("/generate", wallet.Generate)
+
+	blockRoute := r.Group("/block")
+	blockRoute.GET("/latest", block.LatestBlock)
 
 	r.Run(":8080")
 }

@@ -1,0 +1,24 @@
+appname: ""
+appdebug: true
+outdir: "./outputs"
+nodes:
+  80001:
+    - addr: "127.0.0.1:8545"
+      chain: "mumbai"
+      type: "erigon"
+statsdatabase:
+  years:
+    read:
+      name: "years:read"
+      dsn: "root:123456@tcp(127.0.0.1:3306)/years?charset=utf8"
+    write:
+      name: "years:write"
+      dsn: "root:123456@tcp(127.0.0.1:3306)/years?charset=utf8"
+parseredis:
+  addr: "127.0.0.1"
+  password: ""
+  db: 0
+log:
+  level: debug
+  path: "./logs"
+  filename: "log"

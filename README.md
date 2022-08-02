@@ -12,6 +12,8 @@ go run main.go
 | ------ | ------ | ------ |
 | /v1/years/record | POST | metaMask签名后的数据 |
 | /v3/uniswap/swap | POST | UniswapV3兑换接口，ExcuteInput |
+| /v3/uniswap/quoter | POST | UniswapV3兑换接口查询接口 |
+| /wallet/generate | GET | 通过随机种子生成hd钱包私钥，地址和助记词 |
 
 
 ### abigen编译合约

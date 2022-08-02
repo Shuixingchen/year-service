@@ -2,10 +2,12 @@ package services
 
 import (
 	"context"
+	"math/big"
 
 	"github.com/Shuixingchen/year-service/contracts/artificial/erc20"
 	"github.com/Shuixingchen/year-service/utils"
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/ethereum/go-ethereum/rpc"
 	log "github.com/sirupsen/logrus"
@@ -51,4 +53,11 @@ func (c *Client) GetTokenCaller(tokenAddr string) *erc20.Erc20 {
 		log.WithField("method", "NewErc20Caller").Error(err)
 	}
 	return tc
+}
+
+func (c *Client) GetLateBlock() (uint64, error) {
+	return c.Clients[0].BlockNumber(context.Background())
+}
+func (c *Client) GetBlcokByNumber(number uint64) (*types.Block, error) {
+	return c.Clients[0].BlockByNumber(context.Background(), big.NewInt(int64(number)))
 }
