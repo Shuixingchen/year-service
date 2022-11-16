@@ -1,0 +1,29 @@
+appname: ""
+appdebug: true
+outdir: "./outputs"
+nodes:
+  80001:
+    - addr: "https://polygon-mumbai.g.alchemy.com/v2/_4xDtlTKVaX1JfRvysRif0wZ85"
+      chain: "mumbai"
+      type: "erigon"
+  5:
+    - addr: "https://eth-goerli.g.alchemy.com/v2/BV2DShKb8yJgHutXYtiUN-hE9"
+      chain: "goerli"
+      type: "erigon"
+statsdatabase:
+  years:
+    read:
+      name: "years:read"
+      dsn: "root:123456@tcp(127.0.0.1:3306)/years?charset=utf8"
+    write:
+      name: "years:write"
+      dsn: "root:123456@tcp(127.0.0.1:3306)/years?charset=utf8"
+parseredis:
+  addr: "127.0.0.1"
+  password: ""
+  db: 0
+log:
+  level: debug
+  path: "./logs"
+  filename: "log"
+ 
