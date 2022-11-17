@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"github.com/Shuixingchen/year-service/handlers/middleware"
 	"github.com/Shuixingchen/year-service/handlers/services"
 
 	"github.com/gin-gonic/gin"
@@ -14,10 +15,13 @@ func NewWebHandler() *WebHandler {
 }
 func (h *WebHandler) Handle() {
 	r := gin.Default()
+	r.Use(middleware.Cors())
+
 	years := services.NewYearsHandler()
 	uniswapV3 := services.NewUniswapV3Handler()
 	wallet := services.NewWalletHandler()
 	block := services.NewBlockHandler()
+	worldcup := services.NewWorldCupHandler()
 
 	versionRoute := r.Group("/v1")
 	serviceRoute := versionRoute.Group("/years")
@@ -34,6 +38,9 @@ func (h *WebHandler) Handle() {
 
 	blockRoute := r.Group("/block")
 	blockRoute.GET("/latest", block.LatestBlock)
+
+	worldcupRoute := r.Group("/worldcup")
+	worldcupRoute.GET("/getallgame", worldcup.GetAllGames)
 
 	r.Run(":8080")
 }
