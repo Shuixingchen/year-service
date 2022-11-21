@@ -14,14 +14,15 @@ type WorldCup struct {
 }
 
 type GameInfo struct {
-	ID        int
-	PlayAID   uint16
-	PlayBID   uint16
-	PlayAIcon string
-	PlayBIcon string
-	PlayA     string
-	PlayB     string
-	StartTime uint64
+	ID           int
+	PlayAID      uint16
+	PlayBID      uint16
+	PlayAIcon    string
+	PlayBIcon    string
+	PlayA        string
+	PlayB        string
+	StartTime    uint64
+	ContractAddr string
 }
 
 func NewWorldCupHandler() *WorldCup {
@@ -42,6 +43,7 @@ func (h *WorldCup) GetAllGames(c *gin.Context) {
 		g.PlayAID = val.PlayAID
 		g.PlayBID = val.PlayBID
 		g.StartTime = val.StartTime
+		g.ContractAddr = val.ContractAddr
 		if t, ok := teams[val.PlayAID]; ok {
 			g.PlayA = t.Name
 			g.PlayAIcon = t.Icon

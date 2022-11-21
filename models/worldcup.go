@@ -7,9 +7,10 @@ import (
 )
 
 type Game struct {
-	PlayAID   uint16
-	PlayBID   uint16
-	StartTime uint64
+	PlayAID      uint16
+	PlayBID      uint16
+	StartTime    uint64
+	ContractAddr string
 }
 
 type Team struct {
@@ -21,7 +22,7 @@ type Team struct {
 
 func GetAllGames(db *sql.DB) []*Game {
 	result := make([]*Game, 0)
-	query := "select `playA_id`,`playB_id`, UNIX_TIMESTAMP(start_time) from games"
+	query := "select `playA_id`,`playB_id`, UNIX_TIMESTAMP(start_time), `contract_addr` from games"
 	rows, err := db.Query(query)
 	if err != nil {
 		log.WithField("method", "GetAllGames").Panic(err)
@@ -29,7 +30,7 @@ func GetAllGames(db *sql.DB) []*Game {
 	defer rows.Close()
 	for rows.Next() {
 		var g Game
-		if err := rows.Scan(&g.PlayAID, &g.PlayBID, &g.StartTime); err == nil {
+		if err := rows.Scan(&g.PlayAID, &g.PlayBID, &g.StartTime, &g.ContractAddr); err == nil {
 			result = append(result, &g)
 		}
 	}
