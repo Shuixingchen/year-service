@@ -2,6 +2,7 @@ package services
 
 import (
 	"context"
+	"fmt"
 	"math/big"
 
 	"github.com/Shuixingchen/year-service/contracts/artificial/erc20"
@@ -60,4 +61,12 @@ func (c *Client) GetLateBlock() (uint64, error) {
 }
 func (c *Client) GetBlcokByNumber(number uint64) (*types.Block, error) {
 	return c.Clients[0].BlockByNumber(context.Background(), big.NewInt(int64(number)))
+}
+func (c *Client) GetCode(contractAddr string) []byte {
+	addr := common.HexToAddress(contractAddr)
+	bytecode, err := c.Clients[0].CodeAt(context.Background(), addr, nil)
+	if err != nil {
+		fmt.Println(err)
+	}
+	return bytecode
 }

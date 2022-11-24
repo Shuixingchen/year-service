@@ -22,6 +22,7 @@ func (h *WebHandler) Handle() {
 	wallet := services.NewWalletHandler()
 	block := services.NewBlockHandler()
 	worldcup := services.NewWorldCupHandler()
+	evm := services.NewEVMHandler()
 
 	versionRoute := r.Group("/v1")
 	serviceRoute := versionRoute.Group("/years")
@@ -41,6 +42,9 @@ func (h *WebHandler) Handle() {
 
 	worldcupRoute := r.Group("/worldcup")
 	worldcupRoute.GET("/getallgame", worldcup.GetAllGames)
+
+	evmRoute := r.Group("/evm")
+	evmRoute.GET("/decompile", evm.Decompile)
 
 	r.Run(":8080")
 }
