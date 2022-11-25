@@ -34,10 +34,13 @@ func (h *EVM) Decompile(c *gin.Context) {
 	}
 	client := NewClient(utils.Config.Nodes[int(id)])
 	byteCode := client.GetCode(constractAddr)
+	if len(byteCode) == 0 {
+		log.WithField("addr", constractAddr).Error("no found contract")
+	}
 	ins := decompile(byteCode)
-	res := ""
+	res := make([]string, 0)
 	for _, v := range ins {
-		res = res + fmt.Sprintf("%s  %s  %s \n", v.PC, v.Op, v.Arg)
+		res = append(res, fmt.Sprintf("%s  %s  %s", v.PC, v.Op, v.Arg))
 	}
 	utils.Response(c, http.StatusOK, res)
 }
