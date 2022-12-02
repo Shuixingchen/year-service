@@ -23,6 +23,7 @@ func (h *WebHandler) Handle() {
 	block := services.NewBlockHandler()
 	worldcup := services.NewWorldCupHandler()
 	evm := services.NewEVMHandler()
+	react := services.NewReactHandler()
 
 	versionRoute := r.Group("/v1")
 	serviceRoute := versionRoute.Group("/years")
@@ -45,6 +46,9 @@ func (h *WebHandler) Handle() {
 
 	evmRoute := r.Group("/evm")
 	evmRoute.GET("/decompile", evm.Decompile)
+
+	reactRoute := r.Group("/react")
+	reactRoute.POST("/login", react.DoLogin)
 
 	r.Run(":8080")
 }
